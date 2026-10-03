@@ -83,7 +83,7 @@ One paragraph in the report covering the tools used (including Claude Code), wha
 
 ## Runtime environment: local container (NVIDIA A40, 46 GB)
 - All work (data prep, inference, any fine-tuning) runs in **this container**: NVIDIA A40 46 GB, torch 2.11.0+cu126, conda Python 3.12. Google Colab is **not used at all** (decided 2026-10-03; replaces the 2026-10-02 Colab decision). Don't add Colab-specific code.
-- **README TODO**: tell the TA to rerun the notebooks in a CUDA environment with ≥ ~24 GB VRAM for bf16 E4B. Include the setup steps (clone the repo, `pip install -r requirements.txt`, set `HF_TOKEN`, accept the Gemma 3 licenses) and state that results were produced on an A40.
+- **README** (done 2026-10-03): `README.md` covers the CUDA/≥24 GB VRAM requirement, install, the gated Gemma 3 license + HF token steps (`hf auth login` / `HF_TOKEN`, with an access check), and states that results were produced on an A40. Keep it updated as Tasks 2–4 land.
 
 ## Repo state / conventions
 - Notebooks live in `src/` (`task_1.ipynb`, `task_2.ipynb`, `task_3.ipynb`). Each starts with a `%pip install` cell and a setup cell. Shared code is in `src/text2sql/` (`config.py` holds paths, seed, model IDs, decoding params and run logging). Task logic (data prep, prompting, inference, metrics) lives in the task notebook itself as separate cells, each with a markdown header and description; `src/text2sql/` holds only shared settings/helpers.

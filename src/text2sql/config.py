@@ -64,20 +64,29 @@ class ModelSpec:
     hf_id: str
     category: str  # "A" (no reasoning) or "B" (reasoning)
     params: str  # as reported in the methodology
-    reasoning: bool = False  # True -> prepend <|think|> to system prompt
+    loader: str  # transformers Auto class used to load it (per the model card)
+    reasoning: bool = False  # True -> enable_thinking=True + THINKING_PREFILL
     gated: bool = False
+
+    @property
+    def name(self) -> str:
+        """HF repo name, used as the key under `responses` in DEV_DATASET."""
+        return self.hf_id.split("/")[-1]
 
 
 MODELS: dict[str, ModelSpec] = {
     m.key: m
     for m in [
-        ModelSpec("gemma3-1b", "google/gemma-3-1b-it", "A", "~1.0B", gated=True),
-        ModelSpec("gemma3-4b", "google/gemma-3-4b-it", "A", "~4.3B", gated=True),
+        ModelSpec("gemma3-1b", "google/gemma-3-1b-it", "A", "~1.0B", "AutoModelForCausalLM", gated=True),
+        ModelSpec(
+            "gemma3-4b", "google/gemma-3-4b-it", "A", "~4.3B", "AutoModelForImageTextToText", gated=True
+        ),
         ModelSpec(
             "gemma4-e4b",
             "google/gemma-4-E4B-it",
             "B",
             "~8.0B total / ~4.5B effective (PLE)",
+            "AutoModelForMultimodalLM",
             reasoning=True,
         ),
     ]
@@ -93,15 +102,19 @@ class DecodingConfig:
     do_sample: bool = False  # greedy by default -> deterministic
     temperature: float | None = None  # only used if do_sample
     top_p: float | None = None  # only used if do_sample
-    # Placeholder values: revisit after the pilot (truncation rate).
-    max_new_tokens: int = 512
+    top_k: int | None = None  # only used if do_sample
+    # Same cap for all models; Gemma 3 stops at EOS long before it.
+    max_new_tokens: int = 8192
 
 
-DECODING: dict[str, DecodingConfig] = {
-    "gemma3-1b": DecodingConfig(),
-    "gemma3-4b": DecodingConfig(),
-    "gemma4-e4b": DecodingConfig(max_new_tokens=8192),  # long reasoning traces
-}
+# Identical settings for every model (greedy, same cap) to keep the comparison fair
+DECODING: dict[str, DecodingConfig] = {key: DecodingConfig() for key in MODELS}
+BATCH_SIZE = 16  # same for every model
+
+# E4B decides by itself whether to think, and skipped thinking on easy questions
+# in a probe. Pre-filling the model turn with the thought-channel opener forces a
+# trace for every example (Task 2 needs one per example).
+THINKING_PREFILL = "<|channel>thought\n"
 
 
 # ---------------------------------------------------------------- secrets
