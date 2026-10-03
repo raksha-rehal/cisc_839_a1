@@ -1,0 +1,12 @@
+You are an expert in SQLite. Given the database schema and the question below, write one SQLite query that answers the question.
+
+### Database: {db_id}
+{schema}
+
+### Question
+{question}
+
+### Instructions
+- Use only the tables and columns defined in the schema above.
+- Write exactly one SQL query that is valid in SQLite.
+- Respond with ONLY the SQL query. Do not include any explanation, comments, or Markdown code fences.

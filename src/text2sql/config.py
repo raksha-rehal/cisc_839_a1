@@ -22,6 +22,18 @@ OUTPUTS_DIR = REPO_ROOT / "outputs"
 RESULTS_DIR = REPO_ROOT / "results"
 FIGURES_DIR = RESULTS_DIR / "figures"
 EVAL_SCRIPT_DIR = REPO_ROOT / "test-suite-sql-eval"
+PROMPT_TEMPLATE = Path(__file__).parent / "prompt_template.txt"
+DEV_DATASET = OUTPUTS_DIR / "spider_dev.json"  # dev.json + prompt, difficulty, responses
+
+# ---------------------------------------------------------------- data sources
+# Official Spider 1.0 zip (yale-lily.github.io/spider), includes the SQLite DBs
+SPIDER_GDRIVE_ID = "1403EGqzIDoHMdQF4c9Bkyl7dZLZ5Wt6J"
+EVAL_SCRIPT_REPO = "https://github.com/taoyds/test-suite-sql-eval.git"
+EVAL_SCRIPT_COMMIT = "e97acc546ecbee8fa27fa8dbf025ef61493a876c"  # pinned for reproducibility
+
+# ---------------------------------------------------------------- prompt
+N_SAMPLE_ROWS = 3  # sample rows per table in the schema block
+MAX_CELL_CHARS = 100  # truncate long cell values in sample rows
 
 # ---------------------------------------------------------------- seed
 SEED = 42
@@ -71,8 +83,8 @@ MODELS: dict[str, ModelSpec] = {
     ]
 }
 
-# Same precision for all models where possible (E4B in bf16 won't fit a T4).
-QUANTIZATION = "4bit-nf4"  # one of: "bf16", "8bit", "4bit-nf4"
+# Same precision for all models: all three fit in bf16 on the A40 (46 GB).
+QUANTIZATION = "bf16"  # one of: "bf16", "8bit", "4bit-nf4"
 
 
 # ---------------------------------------------------------------- decoding
@@ -96,8 +108,8 @@ DECODING: dict[str, DecodingConfig] = {
 def get_hf_token() -> str:
     """HF token via huggingface_hub's standard lookup. Never hardcode it.
 
-    Checks, in order: Colab secret `HF_TOKEN`, env var `HF_TOKEN`, then the
-    token saved by `huggingface-cli login`. Raises if none is found.
+    Checks, in order: env var `HF_TOKEN`, then the token saved by
+    `huggingface-cli login`. Raises if none is found.
     """
     from huggingface_hub import get_token
 
@@ -105,7 +117,7 @@ def get_hf_token() -> str:
     if not token:
         raise RuntimeError(
             "No Hugging Face token found. Log in with `huggingface-cli login`, "
-            "set the HF_TOKEN env var, or add an HF_TOKEN Colab secret. "
+            "or set the HF_TOKEN env var. "
             "See README §Setup (the Gemma 3 licenses must also be accepted)."
         )
     return token

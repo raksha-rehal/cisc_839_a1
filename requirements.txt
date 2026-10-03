@@ -11,6 +11,9 @@ huggingface_hub
 # Task 3 (Option B only: LoRA / QLoRA)
 peft
 
+# Data download (official Spider zip on Google Drive)
+gdown
+
 # Evaluation (deps of test-suite-sql-eval)
 sqlparse
 nltk
