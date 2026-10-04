@@ -86,7 +86,7 @@ One paragraph in the report covering the tools used (including Claude Code), wha
 - **README** (done 2026-10-03): `README.md` covers the CUDA/≥24 GB VRAM requirement, install, the gated Gemma 3 license + HF token steps (`hf auth login` / `HF_TOKEN`, with an access check), and states that results were produced on an A40. Keep it updated as Tasks 2–4 land.
 
 ## Repo state / conventions
-- Notebooks live in `src/` (`task_1.ipynb`, `task_2.ipynb`, `task_3.ipynb`). Each starts with a `%pip install` cell and a setup cell. Shared code is in `src/text2sql/` (`config.py` holds paths, seed, model IDs, decoding params and run logging). Task logic (data prep, prompting, inference, metrics) lives in the task notebook itself as separate cells, each with a markdown header and description; `src/text2sql/` holds only shared settings/helpers.
+- Notebooks live in `src/` (`task_1.ipynb`, `task_2.ipynb`, `task_3.ipynb`). Each starts with a `%pip install` cell and a setup cell. Shared settings are in `src/config.py` (paths, seed, model IDs, decoding params and run logging), next to `src/prompt_template.txt` and the model inputs `src/spider_dev_inputs.json`; each notebook imports it with `import config as C`. Task logic (data prep, prompting, inference, metrics) lives in the task notebook itself as separate cells, each with a markdown header and description; `src/config.py` holds only shared settings/helpers. There is no `src/text2sql/` package any more (removed 2026-10-04).
 - Log all settings (seeds, model IDs, decoding params) and save per-example outputs (prediction, raw output, trace, latency, token counts, correctness, difficulty) to files so report tables can be regenerated.
 
 
@@ -102,17 +102,22 @@ One paragraph in the report covering the tools used (including Claude Code), wha
 - iterate through each element in the .json dataset (i.e. each text-SQL pair), and add an additional key: “prompt”... i.e. this is on the same level as “question” or “db_id”. at the same time that you add this new key, add the prompt according to the template made, and this will be the respective value to each individual entry’s “prompt”. the data needed to fill-in the template will be pulled from other keys in the same data point entry, such as the “question” and other information about the database schema. 
 - once this is complete, we will be adding another new key called “difficulty”, whose value will hold the results of this script for each respective data point: https://github.com/taoyds/test-suite-sql-eval/blob/master/evaluation.py
 - we will be adding another new key called “responses”… the value of this will be 3 sub-dictionaries. the key of each sub-dict will be model’s name, e.g. gemma-4-E4B-it. the value for each will be the LLM’s actual response that is output…
+- **UPDATE (2026-10-04), storage decision:** the responses are NOT stored inside the dataset. Merging them into a copy of the dev set duplicated what the per-model output files already hold, so we dropped it.
+    - Model inputs: `src/spider_dev_inputs.json`, one entry per dev example with `id` (position in Spider `dev.json`), `db_id`, `question`, gold `query`, `difficulty`, `prompt`.
+    - Model outputs: only in `outputs/<model>/baseline/responses.jsonl`, one record per example keyed by the same `id` (extracted SQL in `query`, plus raw output, token counts, latency). Gemma 4 E4B's reasoning trace is the `thinking` field there (no separate `reasoning_traces` key).
+    - Metrics and Task 2 join inputs and outputs by `id`.
 
 3. 
 - we will be testing on ALL the dev examples…
 - we will are doing zero-shot sampling
 - we want to consider the following before we actually start prompting, and want to make sure that it is as consistent as possible across all 3 LLMs to reduce bias when comparing metrics…. 
     - Inference settings: decoding strategy, temperature, top-p, maximum output length, whether reasoning was enabled, and the hardware or runtime used
-- now ready for prompting the LLMs. prompt each model and save its output in its associated place under “responses”. again, the “<model-name>” and “query” should be in the exact same format in order to compare and grab statistics.
+- now ready for prompting the LLMs. prompt each model and save its output in its associated place under “responses” (UPDATE 2026-10-04: done; outputs live in `outputs/<model>/baseline/responses.jsonl`, see part 2). again, the “<model-name>” and “query” should be in the exact same format in order to compare and grab statistics.
 
 - repeat with all 3 models. now, we want to grab metrics. we will stop and have claude grab the metrics that were used in the Spider dataset’s associated paper: https://arxiv.org/pdf/1809.08887
 
 4. 
+- **Start of the metrics step (moved here from the removed task_1 Step 2.7, 2026-10-04):** load `src/spider_dev_inputs.json` and every `outputs/<model>/baseline/responses.jsonl`, join them by `id`, and assert that each model's output ids are exactly the input ids and that Gemma 4 E4B has a non-empty `thinking` trace for every example (Task 2 needs them).
 - then, we will create a new file to store these metrics.
 - Report performances of all considered models, overall and by difficulty level, in a summary table. perhaps we make a .xlsx or .csv file. these metrics will also definitely be plotted for the report.
 - compare the accuracy of each LLM to the ground-truth query

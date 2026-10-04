@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # ---------------------------------------------------------------- paths
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "data"
 SPIDER_DIR = DATA_DIR / "spider"
 EVAL_SUBSET_IDS = DATA_DIR / "eval_subset_ids.json"
@@ -22,8 +22,11 @@ OUTPUTS_DIR = REPO_ROOT / "outputs"
 RESULTS_DIR = REPO_ROOT / "results"
 FIGURES_DIR = RESULTS_DIR / "figures"
 EVAL_SCRIPT_DIR = REPO_ROOT / "test-suite-sql-eval"
+ARCHIVE_DIR = REPO_ROOT / "archive"  # local only (gitignored): pilot runs, superseded runs
+PILOT_DIR = ARCHIVE_DIR / "pilot"  # pilot runs: archive/pilot/<model>/
+PILOT_IDS = PILOT_DIR / "pilot_ids.json"
 PROMPT_TEMPLATE = Path(__file__).parent / "prompt_template.txt"
-DEV_DATASET = OUTPUTS_DIR / "spider_dev.json"  # dev.json + prompt, difficulty, responses
+DEV_INPUTS = Path(__file__).parent / "spider_dev_inputs.json"  # per example: id, db_id, question, gold query, difficulty, prompt
 
 # ---------------------------------------------------------------- data sources
 # Official Spider 1.0 zip (yale-lily.github.io/spider), includes the SQLite DBs
@@ -67,17 +70,22 @@ class ModelSpec:
     loader: str  # transformers Auto class used to load it (per the model card)
     reasoning: bool = False  # True -> enable_thinking=True + THINKING_PREFILL
     gated: bool = False
+    attn_implementation: str = "sdpa"  # see docs/inference_issues.md (Issue 1)
 
     @property
     def name(self) -> str:
-        """HF repo name, used as the key under `responses` in DEV_DATASET."""
+        """HF repo name, e.g. gemma-3-1b-it (used in tables and reports)."""
         return self.hf_id.split("/")[-1]
 
 
 MODELS: dict[str, ModelSpec] = {
     m.key: m
     for m in [
-        ModelSpec("gemma3-1b", "google/gemma-3-1b-it", "A", "~1.0B", "AutoModelForCausalLM", gated=True),
+        # eager: SDPA's memory-efficient kernel corrupted some batched outputs (docs/inference_issues.md)
+        ModelSpec(
+            "gemma3-1b", "google/gemma-3-1b-it", "A", "~1.0B", "AutoModelForCausalLM",
+            gated=True, attn_implementation="eager",
+        ),
         ModelSpec(
             "gemma3-4b", "google/gemma-3-4b-it", "A", "~4.3B", "AutoModelForImageTextToText", gated=True
         ),
@@ -157,8 +165,16 @@ def runtime_info() -> dict:
     return info
 
 
+def run_path(model_key: str, run_name: str = "baseline") -> Path:
+    """Where a run's files live: archive/pilot/<model>/ for the pilot, outputs/<model>/<run>/ otherwise."""
+    if run_name == "pilot":
+        return PILOT_DIR / model_key
+    return OUTPUTS_DIR / model_key / run_name
+
+
 def run_dir(model_key: str, run_name: str = "baseline") -> Path:
-    d = OUTPUTS_DIR / model_key / run_name
+    """run_path(), created if missing."""
+    d = run_path(model_key, run_name)
     d.mkdir(parents=True, exist_ok=True)
     return d
 

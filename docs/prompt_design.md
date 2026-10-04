@@ -1,6 +1,6 @@
 # Prompt design (Task 1, zero-shot)
 
-The template text is in `src/text2sql/prompt_template.txt`. All three models get the same prompt for every dev example.
+The template text is in `src/prompt_template.txt`. All three models get the same prompt for every dev example.
 
 ## Template
 ```

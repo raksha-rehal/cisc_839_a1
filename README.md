@@ -44,15 +44,15 @@ The two **Gemma 3** models are **gated**: Hugging Face only lets you download th
        hf_hub_download(m, 'config.json'); print(m, 'access OK')"
    ```
 
-Gemma 4 E4B is **not** gated and downloads without a token. The code reads the token only through `huggingface_hub` (`src/text2sql/config.py::get_hf_token`), never from the code itself.
+Gemma 4 E4B is **not** gated and downloads without a token. The code reads the token only through `huggingface_hub` (`src/config.py::get_hf_token`), never from the code itself.
 
 ## Running
 
 Start Jupyter from the repo, open the notebooks in `src/`, and run them top to bottom:
 
 - **`src/task_1.ipynb`** (Task 1, benchmark)
-  - **Step 1** downloads Spider 1.0 (official zip, including the SQLite databases) to `data/spider/` and the official evaluation script (`taoyds/test-suite-sql-eval`, pinned commit) to `test-suite-sql-eval/`. It then builds `outputs/spider_dev.json`, which holds every dev example plus its `prompt` and official `difficulty`. No GPU is needed for this step.
-  - **Step 2** runs a 30-example pilot, then all 1034 examples for each model, and merges the outputs into `outputs/spider_dev.json` under `responses`. Gemma 4 E4B's reasoning traces go under `responses.reasoning_traces`. Runs are resumable: per-example outputs are appended to `outputs/<model>/<run>/responses.jsonl`, so if a run is interrupted, just rerun the cell. Each run's settings are logged to `outputs/<model>/<run>/config.json`. The pilot outputs (`outputs/*/pilot/`, `outputs/pilot_ids.json`) are only local sanity checks and are not committed. Rerunning Step 2.5 regenerates them.
+  - **Step 1** downloads Spider 1.0 (official zip, including the SQLite databases) to `data/spider/` and the official evaluation script (`taoyds/test-suite-sql-eval`, pinned commit) to `test-suite-sql-eval/`. It then builds `src/spider_dev_inputs.json`, which holds every dev example's `id`, `db_id`, `question`, gold `query`, official `difficulty` and `prompt`. No GPU is needed for this step.
+  - **Step 2** runs a 30-example pilot, then all 1034 examples for each model, Each model's outputs are stored only in `outputs/<model>/<run>/responses.jsonl`: one record per example, matched to the inputs by `id`, holding the extracted SQL (`query`), raw output, token counts and latency. For Gemma 4 E4B the record also holds the full reasoning trace (`thinking`). Runs are resumable: records are appended after every batch, so if a run is interrupted, just rerun the cell. Each run's settings are logged to `outputs/<model>/<run>/config.json`. The pilot (Step 2.5) is only a local sanity check. Its outputs go to the gitignored `archive/pilot/` (`pilot_ids.json` plus one folder per model) and are not committed. Rerunning Step 2.5 regenerates them, with the same ids and outputs.
 - `src/task_2.ipynb`, `src/task_3.ipynb`: Tasks 2 and 3 (in progress).
 
-All settings (seed, model IDs, decoding, batch size, paths) are in `src/text2sql/config.py`. The prompt template is `src/text2sql/prompt_template.txt`, and the design is explained in `docs/prompt_design.md`.
+All settings (seed, model IDs, decoding, batch size, paths) are in `src/config.py`. The prompt template is `src/prompt_template.txt`, and the design is explained in `docs/prompt_design.md`. The model inputs built in Step 1 (prompt, difficulty and gold SQL per example) are in `src/spider_dev_inputs.json`.

@@ -1,0 +1,34 @@
+{
+  "timestamp_utc": "2026-10-04T00:40:14.328406+00:00",
+  "seed": 42,
+  "model": {
+    "key": "gemma3-1b",
+    "hf_id": "google/gemma-3-1b-it",
+    "category": "A",
+    "params": "~1.0B",
+    "loader": "AutoModelForCausalLM",
+    "reasoning": false,
+    "gated": true,
+    "attn_implementation": "eager"
+  },
+  "quantization": "bf16",
+  "decoding": {
+    "do_sample": false,
+    "temperature": null,
+    "top_p": null,
+    "top_k": null,
+    "max_new_tokens": 8192
+  },
+  "runtime": {
+    "python": "3.12.13",
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+    "torch": "2.11.0+cu126",
+    "cuda": "12.6",
+    "gpu": "NVIDIA A40",
+    "transformers": "5.18.0"
+  },
+  "batch_size": 16,
+  "n_examples": 1034,
+  "prompt_template": "src/prompt_template.txt",
+  "thinking_prefill": null
+}
