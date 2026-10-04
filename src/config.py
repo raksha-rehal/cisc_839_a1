@@ -17,7 +17,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "data"
 SPIDER_DIR = DATA_DIR / "spider"
-EVAL_SUBSET_IDS = DATA_DIR / "eval_subset_ids.json"
 OUTPUTS_DIR = REPO_ROOT / "outputs"
 RESULTS_DIR = REPO_ROOT / "results"
 FIGURES_DIR = RESULTS_DIR / "figures"

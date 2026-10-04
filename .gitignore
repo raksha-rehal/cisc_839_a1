@@ -11,9 +11,7 @@ venv/
 *.token
 
 # Spider data + eval script (downloaded by the notebooks, not committed)
-data/*
-!data/.gitkeep
-!data/eval_subset_ids.json
+data/
 test-suite-sql-eval/
 
 # Local only: helpers, pilot runs (archive/pilot/), superseded runs (e.g. archive/gemma3-1b_baseline_sdpa_bug/)
