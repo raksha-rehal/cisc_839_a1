@@ -1,0 +1,4 @@
+model,s_per_example_mean,s_per_example_median,total_time_min,output_tokens_mean,output_tokens_median,output_tokens_max,thinking_tokens_mean
+gemma-3-1b-it,0.154,0.15,2.7,25.3,22.0,99,
+gemma-3-4b-it,0.364,0.313,6.3,39.4,33.5,166,
+gemma-4-E4B-it,3.816,3.328,65.8,321.1,258.0,3542,284.5

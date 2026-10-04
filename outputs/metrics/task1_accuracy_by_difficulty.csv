@@ -1,0 +1,16 @@
+model,difficulty,n,EX,EM,EM_normalized
+gemma-3-1b-it,easy,248,0.5927,0.5081,0.5081
+gemma-3-1b-it,medium,446,0.2803,0.1054,0.1054
+gemma-3-1b-it,hard,174,0.1552,0.069,0.069
+gemma-3-1b-it,extra,166,0.0663,0.0241,0.0241
+gemma-3-1b-it,all,1034,0.2998,0.1828,0.1828
+gemma-3-4b-it,easy,248,0.875,0.6895,0.6976
+gemma-3-4b-it,medium,446,0.7646,0.3969,0.4126
+gemma-3-4b-it,hard,174,0.5632,0.3046,0.3218
+gemma-3-4b-it,extra,166,0.4518,0.0482,0.0663
+gemma-3-4b-it,all,1034,0.707,0.3956,0.4101
+gemma-4-E4B-it,easy,248,0.9234,0.7056,0.7218
+gemma-4-E4B-it,medium,446,0.8834,0.4036,0.5762
+gemma-4-E4B-it,hard,174,0.7816,0.2471,0.3678
+gemma-4-E4B-it,extra,166,0.6446,0.0181,0.1145
+gemma-4-E4B-it,all,1034,0.8375,0.3878,0.5019

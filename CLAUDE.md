@@ -124,3 +124,13 @@ One paragraph in the report covering the tools used (including Claude Code), wha
 - compare the accuracy of each LLM to each other
 - how will we count invalid or unparseable outputs?
 - Also report efficiency measures (e.g., inference time and output tokens per example).
+- **UPDATE (2026-10-04): part 4 done** in `task_1.ipynb` Step 3. Decisions:
+    - Metrics: EM + component F1 (Spider paper) + EX (official script; not reported in the paper).
+    - Supplementary "EM (normalized)": `INNER JOIN` → `JOIN` before scoring. It is our addition, because the 2018 parser can't read `INNER JOIN`, which mainly affects E4B. Explained in `docs/evaluation_metrics.md`.
+    - Model-vs-model comparison: descriptive only (2×2 overlap counts and accuracy differences, no significance tests).
+    - Invalid, unparseable and exec-error outputs count as incorrect and are reported separately.
+    - Results: CSVs in `outputs/metrics/`, figures in `outputs/metrics/figures/`.
+    - **Central results table: `outputs/metrics/task1_summary.csv`**, one row per model: EX/EM by difficulty and overall, normalized EM, s/example, output tokens, thinking tokens. It is the report's main table.
+    - Supporting tables: `task1_accuracy_by_difficulty.csv`, `task1_efficiency.csv`, `task1_efficiency_by_difficulty.csv` (added 2026-10-04: time and tokens per difficulty level), `task1_component_f1.csv`, `task1_invalid_outputs.csv`, `task1_model_agreement.csv`, `task1_per_example.csv`.
+    - Explanation of all metrics and files: `docs/evaluation_metrics.md`.
+    - Per-example scores were cross-checked to equal the official `evaluation.py` output.

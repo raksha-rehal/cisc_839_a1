@@ -1,0 +1,16 @@
+model,difficulty,n,s_per_example_mean,s_per_example_median,output_tokens_mean,output_tokens_median,thinking_tokens_mean
+gemma-3-1b-it,easy,248,0.147,0.15,18.9,17.5,
+gemma-3-1b-it,medium,446,0.152,0.148,26.3,23.0,
+gemma-3-1b-it,hard,174,0.154,0.141,28.1,24.0,
+gemma-3-1b-it,extra,166,0.17,0.159,29.7,26.0,
+gemma-3-1b-it,all,1034,0.154,0.15,25.3,22.0,
+gemma-3-4b-it,easy,248,0.343,0.307,20.3,17.0,
+gemma-3-4b-it,medium,446,0.356,0.311,38.1,35.5,
+gemma-3-4b-it,hard,174,0.357,0.299,45.7,44.0,
+gemma-3-4b-it,extra,166,0.422,0.372,64.6,63.0,
+gemma-3-4b-it,all,1034,0.364,0.313,39.4,33.5,
+gemma-4-E4B-it,easy,248,3.379,3.085,154.2,121.0,138.5
+gemma-4-E4B-it,medium,446,3.805,3.194,258.3,218.0,223.9
+gemma-4-E4B-it,hard,174,3.649,3.145,448.4,392.0,405.1
+gemma-4-E4B-it,extra,166,4.675,3.789,606.1,504.0,539.2
+gemma-4-E4B-it,all,1034,3.816,3.328,321.1,258.0,284.5
