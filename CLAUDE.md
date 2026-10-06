@@ -60,6 +60,29 @@ Model notes:
 - Define **≥2 measurable features** per trace (definition, relevance to Text-to-SQL, how it's computed).
 - Name the statistical tests/models relating each feature to correctness and difficulty, and justify why each fits the data.
 - Results: descriptive stats by correctness × difficulty, statistical results, and ≥1 visualization (e.g., box plots).
+- **Task 2 plan (2026-10-06):**
+    - Traces: Gemma 4 E4B (the only model with traces), field `thinking` in `outputs/gemma4-e4b/baseline/responses.jsonl`. Correctness (EX, EM) and difficulty come from `outputs/metrics/task1_per_example.csv`, joined by `id`.
+    - Features chosen with the user: **(1) trace length** (thinking tokens) and **(2) number of SQL drafts** written out in the trace. **Draft definition (A, decided 2026-10-06):**
+        - a draft is every distinct SQL query written out in the trace that contains both `SELECT` and `FROM`;
+        - it can be in a code block, in inline code, or written clause by clause on consecutive lines (joined into one query);
+        - queries are compared after normalizing whitespace and case, so repeats count once;
+        - sub-queries and rewrites count as separate drafts;
+        - keyword mentions (e.g. `COUNT(*)`) are not drafts.
+        - On the 1034 traces: 0 drafts in 57, 1 in 665, ≥2 in 312.
+        - Rejected alternative (B): drop sub-queries that appear inside a later query. Its heuristic missed some building blocks.
+    - Results must include, as requested by the user:
+        - descriptive statistics for each feature, broken down by correctness and difficulty;
+        - the statistical test results;
+        - at least one visualization, e.g. box plots of each feature by correctness and difficulty.
+    - Every feature co-varies with difficulty, so the tests must control for difficulty (compare correct vs. wrong within each level).
+    - **UPDATE (2026-10-06): Task 2 analysis done** in `src/task_2.ipynb`.
+        - Correctness = EX.
+        - Tests (chosen with the user): Kruskal–Wallis + Spearman (feature vs difficulty); Mann–Whitney U + rank-biserial r within each level, Holm over 8 tests; logistic regression correct ~ feature + difficulty (length as log2 tokens).
+        - Plots: box plots by difficulty × correctness with means marked, plus accuracy by number of drafts.
+        - Outputs: `outputs/metrics/task2_{features,descriptive,tests,logistic}.csv`, `figures/task2_{feature_boxplots,accuracy_by_drafts}`.
+        - The draft counter was hand-checked on 24 traces (24/24 agree). In plain text, only UPPERCASE SQL keywords count, because E4B uses 'Select … from' as ordinary English.
+        - Notebook markdown explains why each test was chosen and what it is applied to, and the code has step comments (user requirement).
+        - Next: Task 2 write-up (`archive/docs/task_2_*.txt`; cite Kruskal & Wallis 1952, Spearman 1904, Mann & Whitney 1947 and Holm 1979, verified first).
 
 ## Task 3: Improve one solution (RQ3: To what extent does [strategy] improve [model]?)
 Choose ONE:

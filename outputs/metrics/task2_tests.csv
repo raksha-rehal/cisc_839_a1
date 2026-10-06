@@ -1,0 +1,16 @@
+feature,test,statistic,p_value,difficulty,n_wrong,n_correct,median_wrong,median_correct,rank_biserial_r,p_holm,significant_after_holm
+thinking_tokens,Kruskal-Wallis (4 difficulty levels),526.516,8.549298929186767e-114,all levels,,,,,,,
+thinking_tokens,Spearman rho with difficulty (1-4),0.712,7.693195624237146e-161,all levels,,,,,,,
+n_drafts,Kruskal-Wallis (4 difficulty levels),222.461,5.897052809586036e-48,all levels,,,,,,,
+n_drafts,Spearman rho with difficulty (1-4),0.435,4.864976888406407e-49,all levels,,,,,,,
+thinking_tokens,Mann-Whitney U (wrong vs. correct),3497.5,1.0900648637909637e-05,easy,19.0,229.0,187.0,104.0,0.608,5.450324318954819e-05,True
+thinking_tokens,Mann-Whitney U (wrong vs. correct),15389.5,3.873291127443829e-09,medium,52.0,394.0,306.5,184.5,0.502,3.098632901955063e-08,True
+thinking_tokens,Mann-Whitney U (wrong vs. correct),3889.5,1.997704777298622e-06,hard,38.0,136.0,508.0,307.5,0.505,1.1986228663791732e-05,True
+thinking_tokens,Mann-Whitney U (wrong vs. correct),3579.0,0.15451394603672158,extra,59.0,107.0,459.0,428.0,0.134,0.30902789207344317,False
+thinking_tokens,Mann-Whitney U (wrong vs. correct),112956.5,7.262507712639257e-30,all,168.0,866.0,382.0,191.0,0.553,,
+n_drafts,Mann-Whitney U (wrong vs. correct),2995.0,5.568149339378186e-05,easy,19.0,229.0,1.0,1.0,0.377,0.00022272597357512745,True
+n_drafts,Mann-Whitney U (wrong vs. correct),13144.5,8.593098088061633e-07,medium,52.0,394.0,1.0,1.0,0.283,6.015168661643143e-06,True
+n_drafts,Mann-Whitney U (wrong vs. correct),3156.0,0.026540818191386435,hard,38.0,136.0,2.0,1.5,0.221,0.07962245457415931,False
+n_drafts,Mann-Whitney U (wrong vs. correct),3008.5,0.5916910847536838,extra,59.0,107.0,1.0,2.0,-0.047,0.5916910847536838,False
+n_drafts,Mann-Whitney U (wrong vs. correct),93015.0,1.336901751587989e-12,all,168.0,866.0,1.0,1.0,0.279,,
+thinking_tokens vs n_drafts,Spearman rho between features,0.607,3.4278411018133448e-105,all levels,,,,,,,

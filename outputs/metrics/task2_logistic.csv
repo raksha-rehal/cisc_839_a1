@@ -1,0 +1,5 @@
+model,term,odds_ratio,ci_low,ci_high,p_value,n,pseudo_r2
+1: length,trace length (per doubling),0.326,0.252,0.42,7.267374885076482e-18,1034,0.162
+2: drafts,number of drafts (per extra draft),0.704,0.597,0.831,3.18885457665834e-05,1034,0.089
+3: length + drafts,trace length (per doubling),0.312,0.232,0.419,9.369075235465255e-15,1034,0.163
+3: length + drafts,number of drafts (per extra draft),1.058,0.874,1.28,0.5642646521354377,1034,0.163
