@@ -23,6 +23,10 @@ TASK1_METRICS_DIR = OUTPUTS_DIR / "task1" / "metrics"
 TASK1_FIGURES_DIR = OUTPUTS_DIR / "task1" / "figures"
 TASK2_METRICS_DIR = OUTPUTS_DIR / "task2" / "metrics"
 TASK2_FIGURES_DIR = OUTPUTS_DIR / "task2" / "figures"
+TASK3_METRICS_DIR = OUTPUTS_DIR / "task3" / "metrics"
+TASK3_FIGURES_DIR = OUTPUTS_DIR / "task3" / "figures"
+TASK3_SPLITS = OUTPUTS_DIR / "task3" / "splits.json"  # train/validation split of train_spider (seeded, recorded)
+CHECKPOINTS_DIR = REPO_ROOT / "checkpoints"  # fine-tuned weights (gitignored, never committed)
 EVAL_SCRIPT_DIR = REPO_ROOT / "test-suite-sql-eval"
 ARCHIVE_DIR = REPO_ROOT / "archive"  # local only (gitignored): pilot runs, superseded runs
 PILOT_DIR = ARCHIVE_DIR / "pilot"  # pilot runs: archive/pilot/<model>/
@@ -129,6 +133,25 @@ BATCH_SIZE = 16  # same for every model
 # in a probe. Pre-filling the model turn with the thought-channel opener forces a
 # trace for every example (Task 2 needs one per example).
 THINKING_PREFILL = "<|channel>thought\n"
+
+
+# ---------------------------------------------------------------- Task 3: fine-tuning
+@dataclass
+class FinetuneConfig:
+    model_key: str = "gemma3-1b"
+    train_file: str = "train_spider"  # train_others.json is not used (decided 2026-10-06)
+    val_fraction: float = 0.10  # share of train_spider examples held out, by whole database
+    learning_rate: float = 1e-5
+    epochs: int = 3  # the best epoch is chosen by validation EX
+    micro_batch: int = 8  # examples per forward/backward pass
+    grad_accum: int = 4  # micro-batches per optimizer step -> effective batch 32
+    warmup_ratio: float = 0.03
+    weight_decay: float = 0.0
+    max_grad_norm: float = 1.0
+    seed: int = SEED
+
+
+FINETUNE = FinetuneConfig()
 
 
 # ---------------------------------------------------------------- secrets

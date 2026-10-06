@@ -82,7 +82,17 @@ Model notes:
         - Outputs: `outputs/task2/metrics/task2_{features,descriptive,tests,logistic}.csv`, `outputs/task2/figures/task2_{feature_boxplots,accuracy_by_drafts}`.
         - The draft counter was hand-checked on 24 traces (24/24 agree). In plain text, only UPPERCASE SQL keywords count, because E4B uses 'Select … from' as ordinary English.
         - Notebook markdown explains why each test was chosen and what it is applied to, and the code has step comments (user requirement).
-        - Next: Task 2 write-up (`archive/docs/task_2_*.txt`; cite Kruskal & Wallis 1952, Spearman 1904, Mann & Whitney 1947 and Holm 1979, verified first).
+        - **Write-up requirements (user, 2026-10-06):** `archive/docs/task_2_methodology.txt` and `task_2_results.txt`, LaTeX like Task 1.
+            - Methodology: for each feature, its definition, why it is relevant to Text-to-SQL, and how it was computed. Name the tests/models relating each feature to correctness and to difficulty, and why each fits our data.
+            - The tests are NOT course material, so explain each one briefly but clearly enough for a beginner: what it is, why we chose it, and how it applies to our data. Don't go deep into the math.
+            - Results: descriptive statistics per feature by correctness × difficulty, the statistical results, ≥1 visualization (box plots), and a direct answer to RQ2 with numbers.
+            - Citations verified (2026-10-06):
+                - Kruskal & Wallis 1952 (JASA 47(260):583–621);
+                - Mann & Whitney 1947 (Ann. Math. Stat. 18(1):50–60);
+                - Spearman 1904 (Am. J. Psychol. 15(1):72–101);
+                - Holm 1979 (Scand. J. Stat. 6(2):65–70, JSTOR 4615733);
+                - Kerby 2014 (Comprehensive Psychology 3, rank-biserial 'simple difference formula');
+                - Cox 1958 (JRSS B 20(2):215–232, logistic regression).
 
 ## Task 3: Improve one solution (RQ3: To what extent does [strategy] improve [model]?)
 Choose ONE:
@@ -90,6 +100,13 @@ Choose ONE:
 - **Option B – Adaptation**: change model parameters using the Spider **train** split (e.g., fine-tuning/LoRA)
 
 Justify the choice of model, name the strategy, and evaluate on the **same subset and metrics as Task 1**, overall and by difficulty. Include one table comparing original vs. improved, plus 1–2 examples the change fixed or broke. A negative result is acceptable if it is well motivated and explained.
+
+- **Task 3 decisions and status (2026-10-06): run done** in `src/task_3.ipynb` (plan: `~/.claude/plans/glowing-gliding-quill.md`).
+    - Option B: **full fine-tuning of Gemma 3 1B** on `train_spider.json` only (7000 examples). The validation split takes whole databases, about 10%, with seed 42: 6282 training examples (124 DBs) and 718 validation examples (16 DBs), in `outputs/task3/splits.json`. Dev is used only for the final evaluation (all 1034).
+    - Settings (`C.FINETUNE`): AdamW lr 1e-5, cosine schedule with 3% warmup, effective batch 32 (8×4), 3 epochs, grad clip 1.0, fp32 master weights + bf16 autocast, loss on SQL target tokens only. The best epoch is chosen by validation EX; checkpoints go in the gitignored `checkpoints/`.
+    - Results: validation EX 0.249 → 0.532 → 0.592 → 0.617 (epoch 3 chosen; still rising, so note it as a limitation). Dev EX 0.300 → 0.646, EM 0.183 → 0.591 (normalized EM = EM). Fixed 394, broken 36. 241 execution errors remain (200 no such column, 32 no such table).
+    - Outputs: `outputs/task3/metrics/task3_{comparison,fixed_broken,per_example,validation,training_log}.csv`, `task3_examples.json`, `task3_training_summary.json`; figures `outputs/task3/figures/task3_{comparison,training}`. Shared code: `src/text2sql_utils.py`.
+    - Next: the Task 3 write-up in `archive/docs/task_3_*.txt`, LaTeX like Tasks 1–2.
 
 ## Task 4: AI usage declaration
 One paragraph in the report covering the tools used (including Claude Code), what they helped with, and how their output was checked.

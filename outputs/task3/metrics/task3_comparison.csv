@@ -1,0 +1,20 @@
+metric,difficulty,n,original,fine_tuned,change_points
+EX,easy,248,0.5927,0.8226,23.0
+EX,medium,446,0.2803,0.7018,42.2
+EX,hard,174,0.1552,0.5287,37.4
+EX,extra,166,0.0663,0.3554,28.9
+EX,all,1034,0.2998,0.646,34.6
+EM,easy,248,0.5081,0.7661,25.8
+EM,medium,446,0.1054,0.6368,53.1
+EM,hard,174,0.069,0.4598,39.1
+EM,extra,166,0.0241,0.3434,31.9
+EM,all,1034,0.1828,0.5909,40.8
+EM (normalized),easy,248,0.5081,0.7661,25.8
+EM (normalized),medium,446,0.1054,0.6368,53.1
+EM (normalized),hard,174,0.069,0.4598,39.1
+EM (normalized),extra,166,0.0241,0.3434,31.9
+EM (normalized),all,1034,0.1828,0.5909,40.8
+no SQL extracted,all,1034,1.0,0.0,
+execution errors,all,1034,266.0,241.0,
+mean output tokens,all,1034,25.3,30.2,
+seconds per example,all,1034,0.154,0.2,

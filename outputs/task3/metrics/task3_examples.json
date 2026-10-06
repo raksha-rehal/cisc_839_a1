@@ -1,0 +1,38 @@
+[
+ {
+  "kind": "fixed: original query did not run",
+  "id": 6,
+  "difficulty": "medium",
+  "question": "Show the name and the release year of the song by the youngest singer.",
+  "gold": "SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1",
+  "original": "SELECT s.Name, s.Song_release_year FROM stadium AS s JOIN stadium AS s2 ON s.Stadium_ID = s2.Stadium_ID JOIN singer AS s3 ON s3.Singer_ID = s3.Singer_ID WHERE s3.Age = (SELECT MIN(Age) FROM singer)",
+  "fine_tuned": "SELECT Song_name , Song_release_year FROM singer ORDER BY Age ASC LIMIT 1"
+ },
+ {
+  "kind": "fixed: hard/extra question",
+  "id": 12,
+  "difficulty": "hard",
+  "question": "List all song names by singers above the average age.",
+  "gold": "SELECT song_name FROM singer WHERE age  >  (SELECT avg(age) FROM singer)",
+  "original": "SELECT s.Song_Name FROM singer s JOIN concert c ON s.Singer_ID = c.Singer_ID WHERE c.Year = (SELECT MAX(Year) FROM concert)",
+  "fine_tuned": "SELECT Song_name FROM singer WHERE Age > (SELECT avg(Age) FROM singer)"
+ },
+ {
+  "kind": "broken: medium question",
+  "id": 39,
+  "difficulty": "medium",
+  "question": "what is the name and nation of the singer who have a song having 'Hey' in its name?",
+  "gold": "SELECT name ,  country FROM singer WHERE song_name LIKE '%Hey%'",
+  "original": "SELECT s.Name, s.Country FROM singer s WHERE s.Song_Name LIKE '%Hey%'",
+  "fine_tuned": "SELECT T2.Name , T2.Country FROM singer AS T1 JOIN song AS T2 ON T1.Song_Name = T2.Song_Name WHERE T2.Name LIKE '%Hey%'"
+ },
+ {
+  "kind": "broken: hard/extra question",
+  "id": 211,
+  "difficulty": "hard",
+  "question": "How many flights depart from City 'Aberdeen' and have destination City 'Ashley'?",
+  "gold": "SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.DestAirport  =  T2.AirportCode JOIN AIRPORTS AS T3 ON T1.SourceAirport  =  T3.AirportCode WHERE T2.City  =  \"Ashley\" AND T3.City  =  \"Aberdeen\"",
+  "original": "SELECT COUNT(*) FROM flights WHERE DestAirport = 'Ashley' AND SourceAirport = 'Aberdeen'",
+  "fine_tuned": "SELECT count(*) FROM flights AS T1 JOIN airports AS T2 ON T1.SourceAirport = T2.AirportCode JOIN cities AS T3 ON T2.City = T3.City WHERE T3.City = 'Ashley'"
+ }
+]

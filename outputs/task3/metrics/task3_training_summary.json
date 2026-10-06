@@ -1,0 +1,61 @@
+{
+ "settings": {
+  "model_key": "gemma3-1b",
+  "train_file": "train_spider",
+  "val_fraction": 0.1,
+  "learning_rate": 1e-05,
+  "epochs": 3,
+  "micro_batch": 8,
+  "grad_accum": 4,
+  "warmup_ratio": 0.03,
+  "weight_decay": 0.0,
+  "max_grad_norm": 1.0,
+  "seed": 42
+ },
+ "best_epoch": 3,
+ "validation": [
+  {
+   "epoch": 0,
+   "train_loss": null,
+   "val_EX": 0.2493,
+   "val_EM": 0.1532,
+   "val_exec_errors": 161
+  },
+  {
+   "epoch": 1,
+   "train_loss": 0.29331,
+   "train_minutes": 26.5,
+   "val_EX": 0.532,
+   "val_EM": 0.4749,
+   "val_exec_errors": 205
+  },
+  {
+   "epoch": 2,
+   "train_loss": 0.0766,
+   "train_minutes": 26.5,
+   "val_EX": 0.5919,
+   "val_EM": 0.5515,
+   "val_exec_errors": 191
+  },
+  {
+   "epoch": 3,
+   "train_loss": 0.02272,
+   "train_minutes": 26.6,
+   "val_EX": 0.617,
+   "val_EM": 0.5682,
+   "val_exec_errors": 183
+  }
+ ],
+ "train_examples": 6282,
+ "val_examples": 718,
+ "optimizer_steps": 591,
+ "runtime": {
+  "python": "3.12.13",
+  "platform": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39",
+  "torch": "2.11.0+cu126",
+  "cuda": "12.6",
+  "gpu": "NVIDIA A40",
+  "transformers": "5.18.0"
+ },
+ "checkpoint": "checkpoints/gemma3-1b-spider-ft/best"
+}
