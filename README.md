@@ -2,11 +2,13 @@
 
 This repo evaluates three open-weight LLMs on Spider 1.0 (dev, all 1034 examples) for Text-to-SQL, using zero-shot prompting:
 
-| Model | HF checkpoint | Role | Gated |
-|---|---|---|---|
-| Gemma 3 1B IT | `google/gemma-3-1b-it` | decoder-only, no reasoning | **yes** |
-| Gemma 3 4B IT | `google/gemma-3-4b-it` | decoder-only, no reasoning | **yes** |
-| Gemma 4 E4B IT | `google/gemma-4-E4B-it` | reasoning (thinking mode) | no |
+| Model | HF checkpoint | Pinned revision | Parameters | Role | Gated |
+|---|---|---|---|---|---|
+| Gemma 3 1B IT | `google/gemma-3-1b-it` | `dcc83ea` | 1.00B | decoder-only, no reasoning | **yes** |
+| Gemma 3 4B IT | `google/gemma-3-4b-it` | `093f9f3` | 4.30B (3.88B text) | decoder-only, no reasoning | **yes** |
+| Gemma 4 E4B IT | `google/gemma-4-E4B-it` | `ee0ef60` | 8.00B total / 4.51B effective | reasoning (thinking mode) | no |
+
+The code loads each model at the pinned revision (full hashes in `src/config.py`), so reruns use exactly the weights behind our results. Model details, including how the parameters were counted and what "effective" means for E4B, are in `docs/models.md`.
 
 ## Setup
 
@@ -21,6 +23,14 @@ cd cisc_839_a1
 pip install -r requirements.txt
 ```
 Each notebook also starts with a `%pip install -r ../requirements.txt` cell.
+
+`requirements.txt` **pins the exact package versions** that produced our results (e.g. `transformers==5.18.0`), so a rerun uses the same software. Please don't upgrade them; newer versions can change model outputs slightly.
+
+**PyTorch and your GPU:** PyTorch builds are tied to a CUDA version. Our results used `torch==2.11.0` built for CUDA 12.6 (`2.11.0+cu126`, NVIDIA driver 580). After installing, check that PyTorch sees the GPU:
+```bash
+python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+```
+If it prints `False`, keep version 2.11.0 but reinstall the build that matches your driver, e.g. `pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu126` (replace `cu126` with the CUDA version your driver supports; see pytorch.org).
 
 ### 3. Hugging Face access to the gated Gemma 3 models (required)
 The two **Gemma 3** models are **gated**: Hugging Face only lets you download them after you accept Google's Gemma license **with your own account**. No token is included in this repo, and none ever should be. Without these steps, loading Gemma 3 fails with a `401` / `GatedRepoError`.

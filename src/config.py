@@ -65,11 +65,12 @@ class ModelSpec:
     key: str  # short name used for output dirs
     hf_id: str
     category: str  # "A" (no reasoning) or "B" (reasoning)
-    params: str  # as reported in the methodology
+    params: str  # as reported in the methodology (counted from the weights; see docs/models.md)
     loader: str  # transformers Auto class used to load it (per the model card)
     reasoning: bool = False  # True -> enable_thinking=True + THINKING_PREFILL
     gated: bool = False
     attn_implementation: str = "sdpa"  # see docs/inference_issues.md (Issue 1)
+    revision: str = "main"  # pinned HF commit of the weights used for all reported runs
 
     @property
     def name(self) -> str:
@@ -82,19 +83,22 @@ MODELS: dict[str, ModelSpec] = {
     for m in [
         # eager: SDPA's memory-efficient kernel corrupted some batched outputs (docs/inference_issues.md)
         ModelSpec(
-            "gemma3-1b", "google/gemma-3-1b-it", "A", "~1.0B", "AutoModelForCausalLM",
-            gated=True, attn_implementation="eager",
+            "gemma3-1b", "google/gemma-3-1b-it", "A", "1.00B (text-only)", "AutoModelForCausalLM",
+            gated=True, attn_implementation="eager", revision="dcc83ea841ab6100d6b47a070329e1ba4cf78752",
         ),
         ModelSpec(
-            "gemma3-4b", "google/gemma-3-4b-it", "A", "~4.3B", "AutoModelForImageTextToText", gated=True
+            "gemma3-4b", "google/gemma-3-4b-it", "A",
+            "4.30B total (3.88B text model + 0.42B vision encoder, unused)", "AutoModelForImageTextToText",
+            gated=True, revision="093f9f388b31de276ce2de164bdc2081324b9767",
         ),
         ModelSpec(
             "gemma4-e4b",
             "google/gemma-4-E4B-it",
             "B",
-            "~8.0B total / ~4.5B effective (PLE)",
+            "8.00B total / 4.51B effective (total minus token + per-layer embeddings)",
             "AutoModelForMultimodalLM",
             reasoning=True,
+            revision="ee0ef6023621cff504d758262d4e04895a5af4a2",
         ),
     ]
 }

@@ -36,11 +36,13 @@ Results: summary table of all models, overall and per difficulty level, plus eff
 ## Chosen models (Task 1)
 Hugging Face IDs checked against the HF API on 2026-10-02.
 
-| Category | Model | HF checkpoint | Params (safetensors) | Notes |
+| Category | Model | HF checkpoint | Params (counted from weights) | Notes |
 |---|---|---|---|---|
-| A. Decoder-only, no reasoning | Gemma 3 1B IT | `google/gemma-3-1b-it` | ~1.0B | Text-only; **gated** |
-| A. Decoder-only, no reasoning | Gemma 3 4B IT | `google/gemma-3-4b-it` | ~4.3B | Multimodal (image-text-to-text); use for text only; **gated** |
-| B. Reasoning LLM | Gemma 4 E4B IT | `google/gemma-4-E4B-it` | ~8.0B total / ~4.5B effective | Dense + Per-Layer Embeddings (not MoE); multimodal (any-to-any); not gated |
+| A. Decoder-only, no reasoning | Gemma 3 1B IT | `google/gemma-3-1b-it` @ `dcc83ea` | 1.00B | Text-only; **gated** |
+| A. Decoder-only, no reasoning | Gemma 3 4B IT | `google/gemma-3-4b-it` @ `093f9f3` | 4.30B (3.88B text + 0.42B vision) | Multimodal (image-text-to-text); use for text only; **gated** |
+| B. Reasoning LLM | Gemma 4 E4B IT | `google/gemma-4-E4B-it` @ `ee0ef60` | 8.00B total / 4.51B effective | Dense + Per-Layer Embeddings (not MoE); multimodal (any-to-any); not gated |
+
+Revisions are pinned in `src/config.py` (`ModelSpec.revision`, full hashes) and loaded by `task_1.ipynb` Step 2.2. They were verified on 2026-10-06 as the only cached snapshots, so they are the weights behind all reported runs. Full model details for the methodology: `docs/models.md`.
 
 Model notes:
 - **Gated Gemma 3 models**: accept the license on each HF model page and authenticate with an HF token. Keep the token in the `HF_TOKEN` environment variable (or `huggingface-cli login`), never in code.
