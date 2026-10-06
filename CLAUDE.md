@@ -42,7 +42,7 @@ Hugging Face IDs checked against the HF API on 2026-10-02.
 | A. Decoder-only, no reasoning | Gemma 3 4B IT | `google/gemma-3-4b-it` @ `093f9f3` | 4.30B (3.88B text + 0.42B vision) | Multimodal (image-text-to-text); use for text only; **gated** |
 | B. Reasoning LLM | Gemma 4 E4B IT | `google/gemma-4-E4B-it` @ `ee0ef60` | 8.00B total / 4.51B effective | Dense + Per-Layer Embeddings (not MoE); multimodal (any-to-any); not gated |
 
-Revisions are pinned in `src/config.py` (`ModelSpec.revision`, full hashes) and loaded by `task_1.ipynb` Step 2.2. They were verified on 2026-10-06 as the only cached snapshots, so they are the weights behind all reported runs. Full model details for the methodology: `docs/models.md`.
+Revisions are pinned in `src/config.py` (`ModelSpec.revision`, full hashes) and loaded by `task_1.ipynb` Step 2.2. They were verified on 2026-10-06 as the only cached snapshots, so they are the weights behind all reported runs. Full model details for the methodology: `archive/docs/task_1_methodology.txt` (local, gitignored).
 
 Model notes:
 - **Gated Gemma 3 models**: accept the license on each HF model page and authenticate with an HF token. Keep the token in the `HF_TOKEN` environment variable (or `huggingface-cli login`), never in code.
@@ -70,6 +70,7 @@ Justify the choice of model, name the strategy, and evaluate on the **same subse
 
 ## Task 4: AI usage declaration
 One paragraph in the report covering the tools used (including Claude Code), what they helped with, and how their output was checked.
+- **Must mention (noted 2026-10-06):** Claude Code drafted the report content for Task 1 (`archive/docs/task_1_methodology.txt`, `task_1_results.txt`, generated from the result CSVs) and the figures. The user edits and verifies everything manually before submission. Also cover the code, analysis and debugging help, and how it was checked (official-script cross-checks, reproducibility reruns, verified citations).
 
 ## Deliverables
 1. **Code**: notebook(s)/scripts that reproduce Tasks 1–3, plus a **README** with setup instructions. The TA may rerun the code on the eval subset.
@@ -128,11 +129,15 @@ One paragraph in the report covering the tools used (including Claude Code), wha
 - Also report efficiency measures (e.g., inference time and output tokens per example).
 - **UPDATE (2026-10-04): part 4 done** in `task_1.ipynb` Step 3. Decisions:
     - Metrics: EM + component F1 (Spider paper) + EX (official script; not reported in the paper).
-    - Supplementary "EM (normalized)": `INNER JOIN` → `JOIN` before scoring. It is our addition, because the 2018 parser can't read `INNER JOIN`, which mainly affects E4B. Explained in `docs/evaluation_metrics.md`.
+    - Supplementary "EM (normalized)": `INNER JOIN` → `JOIN` before scoring. It is our addition, because the 2018 parser can't read `INNER JOIN`, which mainly affects E4B. Explained in `archive/docs/task_1_methodology.txt` (local).
     - Model-vs-model comparison: descriptive only (2×2 overlap counts and accuracy differences, no significance tests).
     - Invalid, unparseable and exec-error outputs count as incorrect and are reported separately.
     - Results: CSVs in `outputs/metrics/`, figures in `outputs/metrics/figures/`.
     - **Central results table: `outputs/metrics/task1_summary.csv`**, one row per model: EX/EM by difficulty and overall, normalized EM, s/example, output tokens, thinking tokens. It is the report's main table.
     - Supporting tables: `task1_accuracy_by_difficulty.csv`, `task1_efficiency.csv`, `task1_efficiency_by_difficulty.csv` (added 2026-10-04: time and tokens per difficulty level), `task1_component_f1.csv`, `task1_invalid_outputs.csv`, `task1_model_agreement.csv`, `task1_per_example.csv`.
-    - Explanation of all metrics and files: `docs/evaluation_metrics.md`.
+    - Explanation of all metrics: `archive/docs/task_1_methodology.txt` (local).
+- **UPDATE (2026-10-06): Task 1 write-up.**
+    - The four `docs/*.md` notes were consolidated into two paste-ready LaTeX files for the Overleaf report: `archive/docs/task_1_methodology.txt` (Models → Eval data → Prompting → Inference → Evaluation, with BibTeX entries at the end) and `archive/docs/task_1_results.txt` (tables, figures, interpretation, answer to RQ1). Both are in the gitignored `archive/docs/` (not committed; decided 2026-10-06).
+    - All numbers in them were generated from `outputs/metrics/*.csv` by a script kept locally in `archive/writeup/` (gitignored; rerun `python archive/writeup/build_writeup.py` if the metrics change; it writes to `archive/docs/`).
+    - Figures (5, each as PNG + PDF, made in `task_1.ipynb` Step 3.6): `task1_accuracy_by_difficulty`, `task1_component_f1`, `task1_model_agreement`, `task1_errors`, `task1_efficiency`.
     - Per-example scores were cross-checked to equal the official `evaluation.py` output.

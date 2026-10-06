@@ -65,11 +65,11 @@ class ModelSpec:
     key: str  # short name used for output dirs
     hf_id: str
     category: str  # "A" (no reasoning) or "B" (reasoning)
-    params: str  # as reported in the methodology (counted from the weights; see docs/models.md)
+    params: str  # as reported in the methodology (counted from the weight files)
     loader: str  # transformers Auto class used to load it (per the model card)
     reasoning: bool = False  # True -> enable_thinking=True + THINKING_PREFILL
     gated: bool = False
-    attn_implementation: str = "sdpa"  # see docs/inference_issues.md (Issue 1)
+    attn_implementation: str = "sdpa"  # PyTorch attention implementation; Gemma 3 1B uses "eager" (see below)
     revision: str = "main"  # pinned HF commit of the weights used for all reported runs
 
     @property
@@ -81,7 +81,7 @@ class ModelSpec:
 MODELS: dict[str, ModelSpec] = {
     m.key: m
     for m in [
-        # eager: SDPA's memory-efficient kernel corrupted some batched outputs (docs/inference_issues.md)
+        # eager: SDPA's memory-efficient kernel corrupted 6 of 1B's batched outputs; eager gives correct outputs
         ModelSpec(
             "gemma3-1b", "google/gemma-3-1b-it", "A", "1.00B (text-only)", "AutoModelForCausalLM",
             gated=True, attn_implementation="eager", revision="dcc83ea841ab6100d6b47a070329e1ba4cf78752",
