@@ -18,8 +18,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "data"
 SPIDER_DIR = DATA_DIR / "spider"
 OUTPUTS_DIR = REPO_ROOT / "outputs"
-METRICS_DIR = OUTPUTS_DIR / "metrics"  # Step 3: metric tables (CSV)
-FIGURES_DIR = METRICS_DIR / "figures"  # Step 3: plots for the report
+# metric tables (CSV) and report figures, one folder per task; model runs stay shared in OUTPUTS_DIR/<model>/
+TASK1_METRICS_DIR = OUTPUTS_DIR / "task1" / "metrics"
+TASK1_FIGURES_DIR = OUTPUTS_DIR / "task1" / "figures"
+TASK2_METRICS_DIR = OUTPUTS_DIR / "task2" / "metrics"
+TASK2_FIGURES_DIR = OUTPUTS_DIR / "task2" / "figures"
 EVAL_SCRIPT_DIR = REPO_ROOT / "test-suite-sql-eval"
 ARCHIVE_DIR = REPO_ROOT / "archive"  # local only (gitignored): pilot runs, superseded runs
 PILOT_DIR = ARCHIVE_DIR / "pilot"  # pilot runs: archive/pilot/<model>/

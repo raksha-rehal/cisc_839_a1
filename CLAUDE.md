@@ -61,7 +61,7 @@ Model notes:
 - Name the statistical tests/models relating each feature to correctness and difficulty, and justify why each fits the data.
 - Results: descriptive stats by correctness × difficulty, statistical results, and ≥1 visualization (e.g., box plots).
 - **Task 2 plan (2026-10-06):**
-    - Traces: Gemma 4 E4B (the only model with traces), field `thinking` in `outputs/gemma4-e4b/baseline/responses.jsonl`. Correctness (EX, EM) and difficulty come from `outputs/metrics/task1_per_example.csv`, joined by `id`.
+    - Traces: Gemma 4 E4B (the only model with traces), field `thinking` in `outputs/gemma4-e4b/baseline/responses.jsonl`. Correctness (EX, EM) and difficulty come from `outputs/task1/metrics/task1_per_example.csv`, joined by `id`.
     - Features chosen with the user: **(1) trace length** (thinking tokens) and **(2) number of SQL drafts** written out in the trace. **Draft definition (A, decided 2026-10-06):**
         - a draft is every distinct SQL query written out in the trace that contains both `SELECT` and `FROM`;
         - it can be in a code block, in inline code, or written clause by clause on consecutive lines (joined into one query);
@@ -79,7 +79,7 @@ Model notes:
         - Correctness = EX.
         - Tests (chosen with the user): Kruskal–Wallis + Spearman (feature vs difficulty); Mann–Whitney U + rank-biserial r within each level, Holm over 8 tests; logistic regression correct ~ feature + difficulty (length as log2 tokens).
         - Plots: box plots by difficulty × correctness with means marked, plus accuracy by number of drafts.
-        - Outputs: `outputs/metrics/task2_{features,descriptive,tests,logistic}.csv`, `figures/task2_{feature_boxplots,accuracy_by_drafts}`.
+        - Outputs: `outputs/task2/metrics/task2_{features,descriptive,tests,logistic}.csv`, `outputs/task2/figures/task2_{feature_boxplots,accuracy_by_drafts}`.
         - The draft counter was hand-checked on 24 traces (24/24 agree). In plain text, only UPPERCASE SQL keywords count, because E4B uses 'Select … from' as ordinary English.
         - Notebook markdown explains why each test was chosen and what it is applied to, and the code has step comments (user requirement).
         - Next: Task 2 write-up (`archive/docs/task_2_*.txt`; cite Kruskal & Wallis 1952, Spearman 1904, Mann & Whitney 1947 and Holm 1979, verified first).
@@ -155,12 +155,12 @@ One paragraph in the report covering the tools used (including Claude Code), wha
     - Supplementary "EM (normalized)": `INNER JOIN` → `JOIN` before scoring. It is our addition, because the 2018 parser can't read `INNER JOIN`, which mainly affects E4B. Explained in `archive/docs/task_1_methodology.txt` (local).
     - Model-vs-model comparison: descriptive only (2×2 overlap counts and accuracy differences, no significance tests).
     - Invalid, unparseable and exec-error outputs count as incorrect and are reported separately.
-    - Results: CSVs in `outputs/metrics/`, figures in `outputs/metrics/figures/`.
-    - **Central results table: `outputs/metrics/task1_summary.csv`**, one row per model: EX/EM by difficulty and overall, normalized EM, s/example, output tokens, thinking tokens. It is the report's main table.
+    - Results: CSVs in `outputs/task1/metrics/`, figures in `outputs/task1/figures/`.
+    - **Central results table: `outputs/task1/metrics/task1_summary.csv`**, one row per model: EX/EM by difficulty and overall, normalized EM, s/example, output tokens, thinking tokens. It is the report's main table.
     - Supporting tables: `task1_accuracy_by_difficulty.csv`, `task1_efficiency.csv`, `task1_efficiency_by_difficulty.csv` (added 2026-10-04: time and tokens per difficulty level), `task1_component_f1.csv`, `task1_invalid_outputs.csv`, `task1_model_agreement.csv`, `task1_per_example.csv`.
     - Explanation of all metrics: `archive/docs/task_1_methodology.txt` (local).
 - **UPDATE (2026-10-06): Task 1 write-up.**
     - The four `docs/*.md` notes were consolidated into two paste-ready LaTeX files for the Overleaf report: `archive/docs/task_1_methodology.txt` (Models → Eval data → Prompting → Inference → Evaluation, with BibTeX entries at the end) and `archive/docs/task_1_results.txt` (tables, figures, interpretation, answer to RQ1). Both are in the gitignored `archive/docs/` (not committed; decided 2026-10-06).
-    - All numbers in them were generated from `outputs/metrics/*.csv` by a script kept locally in `archive/writeup/` (gitignored; rerun `python archive/writeup/build_writeup.py` if the metrics change; it writes to `archive/docs/`).
+    - All numbers in them were generated from `outputs/task1/metrics/*.csv` by a script kept locally in `archive/writeup/` (gitignored; rerun `python archive/writeup/build_writeup.py` if the metrics change; it writes to `archive/docs/`).
     - Figures (5, each as PNG + PDF, made in `task_1.ipynb` Step 3.6): `task1_accuracy_by_difficulty`, `task1_component_f1`, `task1_model_agreement`, `task1_errors`, `task1_efficiency`.
     - Per-example scores were cross-checked to equal the official `evaluation.py` output.
