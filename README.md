@@ -32,6 +32,8 @@ python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 ```
 If it prints `False`, keep version 2.11.0 but reinstall the build that matches your driver, e.g. `pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu126` (replace `cu126` with the CUDA version your driver supports; see pytorch.org).
 
+While our work doesn't support it, these same results can be replicated on an AMD GPU through ROCm instead of CUDA.
+
 ### 3. Hugging Face access to the gated Gemma 3 models (required)
 The two **Gemma 3** models are **gated**: Hugging Face only lets you download them after you accept Google's Gemma license **with your own account**. No token is included in this repo, and none ever should be. Without these steps, loading Gemma 3 fails with a `401` / `GatedRepoError`.
 
